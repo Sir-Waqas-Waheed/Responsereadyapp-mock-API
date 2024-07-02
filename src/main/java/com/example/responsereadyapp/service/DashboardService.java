@@ -12,7 +12,6 @@ public class DashboardService {
     public DashboardResponse getDashboardData() {
         DashboardResponse response = new DashboardResponse();
 
-
         DashboardResponse.Stats stats = new DashboardResponse.Stats();
         stats.setTotalSites(10);
         stats.setHealthScore(95);
@@ -23,14 +22,10 @@ public class DashboardService {
 
         response.setStats(stats);
 
-
         List<DashboardResponse.CheckDue> checkDueList = getCheckDues();
-
         response.setCheckDue(checkDueList);
 
-
         List<DashboardResponse.SentSupplies> sentSuppliesList = getSentSupplies();
-
         response.setSentSupplies(sentSuppliesList);
 
         return response;

@@ -22,7 +22,6 @@ public class DashboardResponse {
         private int totalFirstAids;
         private int totalPendingCheck;
         private int totalSentSupplies;
-
     }
 
     @Setter
@@ -33,7 +32,6 @@ public class DashboardResponse {
         private String status;
         private String deviceName;
         private String cabinet;
-
     }
 
     @Setter
@@ -43,6 +41,5 @@ public class DashboardResponse {
         private String status;
         private String deviceName;
         private String cabinet;
-
     }
 }

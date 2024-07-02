@@ -1,59 +1,53 @@
 package com.example.responsereadyapp.controller;
 
-import com.example.responsereadyapp.entity.user;
+import com.example.responsereadyapp.dto.LoginDto;
+import com.example.responsereadyapp.dto.UserRegistrationDto;
 import com.example.responsereadyapp.service.UserService;
+import com.example.responsereadyapp.service.TokenService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    //    @Autowired
-    //    private UserService userService;
-     //setter injection
-//    private UserService userService;
-//
-//    @Autowired
-//    public void setUserService(UserService userService) {
-//        this.userService = userService;
-//    }
-//
-    //constructor_injection
+
     private final UserService userService;
+    private final TokenService tokenService;
 
-    public UserController(UserService userService) {
+    public UserController(@Lazy UserService userService, @Lazy TokenService tokenService) {
         this.userService = userService;
+        this.tokenService = tokenService;
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, String>> registerUser(@RequestBody UserRegistrationDto registrationDto) {
+        String token = userService.registerUser(registrationDto);
 
-    @GetMapping
-    public List<user> getAllUsers() {
-        return userService.getAllUsers();
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<user> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginDto loginDto) {
+        String token = userService.loginUser(loginDto);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<user> createUser(@RequestBody user user) {
-        user createdUser = userService.createUser(user);
-        return ResponseEntity.ok(createdUser);
-    }
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logoutUser(@RequestHeader("Authorization") String token) {
+        token = token.substring(7); // Remove "Bearer " prefix
+        tokenService.invalidateToken(token);
 
-    @PutMapping("/{id}")
-    public ResponseEntity<user> updateUser(@PathVariable Long id, @RequestBody user userDetails) {
-        return ResponseEntity.ok(userService.updateUser(id, userDetails));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Logout successful");
+        return ResponseEntity.ok(response);
     }
 }

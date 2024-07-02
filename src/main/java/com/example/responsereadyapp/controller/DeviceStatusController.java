@@ -9,10 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/AeddeviceStatus")
 public class DeviceStatusController {
 
-    @GetMapping("/AeddeviceStatus")
+    @GetMapping
     public ResponseEntity<List<String>> getDeviceStatuses() {
         List<String> statuses = Arrays.asList("Active", "Inactive", "Dormant");
         return ResponseEntity.ok(statuses);

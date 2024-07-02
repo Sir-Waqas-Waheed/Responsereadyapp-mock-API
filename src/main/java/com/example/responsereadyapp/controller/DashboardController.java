@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/dashboard")
 public class DashboardController {
 
     @Autowired
     private DashboardService dashboardService;
 
-    @GetMapping("/dashboard")
+    @GetMapping
     public ResponseEntity<DashboardResponse> getDashboard() {
         DashboardResponse dashboardData = dashboardService.getDashboardData();
         return ResponseEntity.ok(dashboardData);
