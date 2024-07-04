@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/AeddeviceStatus")
+@RequestMapping("/AeddeviceStatus")
 public class DeviceStatusController {
 
     @GetMapping

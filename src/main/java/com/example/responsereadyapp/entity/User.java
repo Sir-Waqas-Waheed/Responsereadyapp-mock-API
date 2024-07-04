@@ -1,21 +1,15 @@
 package com.example.responsereadyapp.entity;
-
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String email;
     private String password;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Token> tokens;
+    private String role;
 
     // Getters and Setters
     public Long getId() {
@@ -50,11 +44,11 @@ public class User {
         this.password = password;
     }
 
-    public List<Token> getTokens() {
-        return tokens;
+    public String getRole() {
+        return role;
     }
 
-    public void setTokens(List<Token> tokens) {
-        this.tokens = tokens;
+    public void setRole(String role) {
+        this.role = role;
     }
 }

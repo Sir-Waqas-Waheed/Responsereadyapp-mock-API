@@ -1,8 +1,11 @@
 package com.example.responsereadyapp;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.example.responsereadyapp.config.*;
+import org.springframework.boot.*;
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.context.annotation.*;
 
+@Import(MailConfig.class)
 @SpringBootApplication
 public class ResponseReadyApp {
 

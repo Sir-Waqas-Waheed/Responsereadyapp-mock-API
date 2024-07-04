@@ -1,22 +1,30 @@
 package com.example.responsereadyapp.dto;
 
 public class UserRegistrationDto {
+    private String role;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
 
-    // Constructors
-    public UserRegistrationDto() {}
 
-    public UserRegistrationDto(String firstName, String lastName, String email, String password) {
+
+    public UserRegistrationDto(String role, String firstName, String lastName, String email, String password) {
+        this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
 
-    // Getters and Setters
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public String getFirstName() {
         return firstName;
     }

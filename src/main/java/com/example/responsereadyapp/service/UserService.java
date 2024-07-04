@@ -1,19 +1,16 @@
 package com.example.responsereadyapp.service;
 
-import com.example.responsereadyapp.dto.LoginDto;
-import com.example.responsereadyapp.dto.UserRegistrationDto;
-import com.example.responsereadyapp.entity.*;
-import com.example.responsereadyapp.repository.UserRepository;
-import com.example.responsereadyapp.util.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import com.example.responsereadyapp.dto.*;
+import com.example.responsereadyapp.entity.User;
+import com.example.responsereadyapp.repository.*;
+import com.example.responsereadyapp.util.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.security.crypto.password.*;
+import org.springframework.stereotype.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.*;
 
 @Service
 public class UserService implements UserServiceInterface {
@@ -21,6 +18,8 @@ public class UserService implements UserServiceInterface {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
     private final TokenService tokenService;
+
+
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenUtil jwtTokenUtil, TokenService tokenService) {
@@ -30,14 +29,18 @@ public class UserService implements UserServiceInterface {
         this.tokenService = tokenService;
     }
 
+
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserResponseDto(user.getId(), user.getName(), user.getEmail(), user.getRole()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public Optional<UserResponseDto> getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> new UserResponseDto(user.getId(), user.getName(), user.getEmail(), user.getRole()));
     }
 
     @Override
@@ -66,6 +69,7 @@ public class UserService implements UserServiceInterface {
             throw new RuntimeException("Email already registered");
         }
         User user = new User();
+        user.setRole(registrationDto.getRole());
         user.setName(registrationDto.getFirstName() + " " + registrationDto.getLastName());
         user.setEmail(registrationDto.getEmail());
         user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
@@ -90,7 +94,30 @@ public class UserService implements UserServiceInterface {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
+
+    @Override
+    public List<User> getUsersByRole(String role) {
+        return userRepository.findByRole(role);
+    }
+
+    @Override
+    public Optional<UserResponseDto> getUserDetailsByToken(String token) {
+        String email = jwtTokenUtil.extractUsername(token);
+        return userRepository.findByEmail(email)
+                .map(user -> new UserResponseDto(user.getId(), user.getName(), user.getEmail(), user.getRole()));
+    }
+
     public void logoutUser(String token) {
         tokenService.invalidateToken(token);
+    }
+    @Override
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+    @Override
+    public UserResponseDto getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserResponseDto(user.getId(), user.getName(), user.getEmail(), user.getRole());
     }
 }

@@ -1,12 +1,13 @@
 package com.example.responsereadyapp.repository;
 
-import com.example.responsereadyapp.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.example.responsereadyapp.entity.*;
+import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.*;
 
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+    List<User> findByRole(String role);
 }
